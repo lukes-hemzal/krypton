@@ -1,4 +1,4 @@
 krypton
 =======
 
-Converter from selenium to arsenic
+Converter from selenium to [arsenic](https://github.com/OzzyCzech/arsenic).
