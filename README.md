@@ -1,4 +1,4 @@
 krypton
 =======
 
-Convertor from selenium to arsenic
+Converter from selenium to arsenic
