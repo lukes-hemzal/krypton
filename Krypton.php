@@ -1,11 +1,18 @@
 <?php
 /**
+ * Converter from selenium to arsenic
+ *
  * @author Lukes Hemzal
  */
 class Krypton {
 	private static $xpath;
 	private static $filePattern = '/(\w*).html$/';
 
+	/**
+	 * @param string $path
+	 * @param string $className
+	 * @return string
+	 */
 	public static function convertDirectory($path, $className = 'Test') {
 		$lines = ['<?php', 'class ' . $className . ' {'];
 		if (is_dir($path)) {
@@ -21,6 +28,11 @@ class Krypton {
 		return implode("\n", $lines);
 	}
 
+	/**
+	 * @param string $path
+	 * @param integer $indentation
+	 * @return string
+	 */
 	public static function convertFile($path, $indentation = 0) {
 		$doc = new DOMDocument();
 		$doc->loadHTMLFile($path);
@@ -35,6 +47,10 @@ class Krypton {
 		return implode("\n", $lines);
 	}
 
+	/**
+	 * @param DOMElement $row
+	 * @return string
+	 */
 	private static function convertRow(DOMElement $row) {
 		$data = self::$xpath->query('td', $row);
 		$function = null;
@@ -46,7 +62,7 @@ class Krypton {
 					$function .= $value;
 					break;
 				default:
-					if ($value) {
+					if ($value !== "") {
 						$arguments[] = "'" . str_replace(["'"], ['"'], $value). "'";
 					}
 			}
@@ -55,6 +71,10 @@ class Krypton {
 		return 'Arsenic::' . $function . '(' . implode(', ', $arguments) . ');';
 	}
 
+	/**
+	 * @param string $path
+	 * @return string
+	 */
 	private static function getFunctionName($path) {
 		if (preg_match(self::$filePattern, $path, $matches)) {
 			return $matches[1];
